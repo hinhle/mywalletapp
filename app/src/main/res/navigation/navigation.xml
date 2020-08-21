@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/financeTrackerFragment">
+
+    <fragment
+        android:id="@+id/financeTrackerFragment"
+        android:name="com.example.mywallet.financetracker.FinanceTrackerFragment"
+        android:label="FinanceTrackerFragment">
+        <action
+            android:id="@+id/action_financeTrackerFragment_to_accountDetailFragment"
+            app:destination="@id/accountDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountDetailFragment"
+        android:name="com.example.mywallet.accountdetail.AccountDetailFragment"
+        android:label="fragment_account_detail"
+        tools:layout="@layout/fragment_account_detail" >
+        <action
+            android:id="@+id/action_accountDetailFragment_to_financeTrackerFragment"
+            app:destination="@id/financeTrackerFragment" />
+        <argument
+            android:name="AccountTypeVieName"
+            app:argType="string"
+            android:defaultValue="Thường" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountTypeDialog"
+        android:name="com.example.mywallet.accountdetail.AccountTypeDialog"
+        android:label="AccountTypeDialog">
+        <action
+            android:id="@+id/action_accountTypeDialog_to_accountDetailFragment"
+            app:destination="@id/accountDetailFragment" />
+    </fragment>
+</navigation>

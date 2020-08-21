@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="accountViewModel"
+            type="com.example.mywallet.accountdetail.AccountDetailViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/addAccountConstraint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".accountdetail.AccountDetailFragment">
+
+        <EditText
+            android:id="@+id/account_name_edit"
+            style="@android:style/TextAppearance.Holo.Widget.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/account_name_label" />
+
+        <EditText
+            android:id="@+id/account_balance_edit"
+            style="@android:style/TextAppearance.Holo.Widget.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="24dp"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            app:layout_constraintEnd_toEndOf="@+id/account_name_edit"
+            app:layout_constraintStart_toStartOf="@+id/account_name_edit"
+            app:layout_constraintTop_toBottomOf="@+id/account_name_edit" />
+
+        <TextView
+            android:id="@+id/account_type_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/type_text"
+            app:layout_constraintBottom_toTopOf="@+id/account_type_text"
+            app:layout_constraintStart_toStartOf="@+id/account_type_text"
+            app:layout_constraintTop_toBottomOf="@+id/account_balance_edit"
+            app:layout_constraintVertical_bias="0.26" />
+
+        <TextView
+            android:id="@+id/account_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/account_name_text"
+            app:layout_constraintStart_toStartOf="@+id/account_name_edit"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/account_balance_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/account_balance_text"
+            app:layout_constraintBottom_toTopOf="@+id/account_balance_edit"
+            app:layout_constraintStart_toStartOf="@+id/account_balance_edit"
+            app:layout_constraintTop_toBottomOf="@+id/account_name_edit"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/account_type_text"
+            style="@android:style/TextAppearance.Holo.Widget.TextView"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
+            android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"
+            android:gravity="center_vertical"
+            android:text="@{accountViewModel.accountType.vieName}"
+
+            android:textAlignment="viewStart"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@+id/account_name_edit"
+            app:layout_constraintStart_toStartOf="@+id/account_name_edit"
+            app:layout_constraintTop_toBottomOf="@+id/account_balance_edit"
+            tools:ignore="RtlCompat"
+            tools:text="Thường" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
