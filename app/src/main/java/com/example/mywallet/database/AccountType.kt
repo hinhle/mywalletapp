@@ -1,6 +1,6 @@
 package com.example.mywallet.database
 
-enum class AccountType (val vieName : String){
+enum class AccountType(val vieName: String) {
     Normal("Thường"),
     Cash("Tiền mặt"),
     CreditCard("Thẻ tín dụng"),

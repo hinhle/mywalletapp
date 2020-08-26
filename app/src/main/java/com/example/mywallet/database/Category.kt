@@ -1,6 +1,6 @@
 package com.example.mywallet.database
 
-enum class Category(val vieName : String) {
+enum class Category(val vieName: String) {
     FoodAndBeverage("Thực phẩm & đồ uống"),
     Shopping("Mua sắm"),
     House("Nhà cửa"),

@@ -17,9 +17,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ClassCastException
 
-private val ITEM_VIEW_TYPE_HEADER = 0
-private val ITEM_VIEW_TYPE_ITEM = 1
-private val ITEM_VIEW_TYPE_FOOTER = 2
+private const val ITEM_VIEW_TYPE_HEADER = 0
+private const val ITEM_VIEW_TYPE_ITEM = 1
+private const val ITEM_VIEW_TYPE_FOOTER = 2
 
 class AccountAdapter(val clickListener : AccountListener, val footerClickListener : FooterListener? = null) : ListAdapter<DataItem, RecyclerView.ViewHolder>(AccountDiffCallback()) {
 
@@ -28,7 +28,7 @@ class AccountAdapter(val clickListener : AccountListener, val footerClickListene
         when (holder) {
             is ViewHolder -> {
                 val nightItem = getItem(position) as DataItem.AccountItem
-                holder.bind(nightItem.account!!, clickListener)
+                holder.bind(nightItem.account, clickListener)
             }
             is FooterViewHolder -> {
                 holder.bind(footerClickListener)
@@ -140,7 +140,7 @@ sealed class DataItem {
 
 
     data class AccountItem(val account: Account) : DataItem() {
-        override val id: kotlin.Long
+        override val id: Long
             get() = account.AccountID
     }
 

@@ -12,6 +12,9 @@
         <action
             android:id="@+id/action_financeTrackerFragment_to_accountDetailFragment"
             app:destination="@id/accountDetailFragment" />
+        <action
+            android:id="@+id/action_financeTrackerFragment_to_transactionFormFragment"
+            app:destination="@id/transactionFormFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountDetailFragment"
@@ -33,5 +36,31 @@
         <action
             android:id="@+id/action_accountTypeDialog_to_accountDetailFragment"
             app:destination="@id/accountDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionFormFragment"
+        android:name="com.example.mywallet.transactionform.TransactionFormFragment"
+        android:label="fragment_transaction_form"
+        tools:layout="@layout/fragment_transaction_form" >
+        <action
+            android:id="@+id/action_transactionFormFragment_to_transactionCategoryFragment"
+            app:destination="@id/transactionCategoryFragment" />
+        <argument
+            android:name="category"
+            app:argType="string"
+            android:defaultValue="Khác" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionCategoryFragment"
+        android:name="com.example.mywallet.transactioncategory.TransactionCategoryFragment"
+        android:label="fragment_transaction_category"
+        tools:layout="@layout/fragment_transaction_category" >
+        <action
+            android:id="@+id/action_transactionCategoryFragment_to_transactionFormFragment"
+            app:destination="@id/transactionFormFragment" >
+            <argument
+                android:name="category"
+                android:defaultValue="Khác" />
+        </action>
     </fragment>
 </navigation>

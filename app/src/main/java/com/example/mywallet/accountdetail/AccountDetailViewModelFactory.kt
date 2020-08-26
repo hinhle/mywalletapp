@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.mywallet.database.WalletDatabaseDao
-import com.example.mywallet.financetracker.FinanceTrackerViewModel
+
 
 class AccountDetailViewModelFactory (
     private val dataSource: WalletDatabaseDao,

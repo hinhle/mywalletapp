@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="account"
             type="com.example.mywallet.database.Account" />
+
         <variable
             name="clickListener"
             type="com.example.mywallet.financetracker.AccountListener" />
@@ -51,7 +53,6 @@
                 android:shadowDx="10"
                 android:shadowDy="10"
 
-                app:setCurrencyFormat="@{account}"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"
@@ -59,6 +60,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/account_name_text"
                 app:layout_constraintVertical_bias="0.0"
+                app:setCurrencyFormat="@{account}"
                 tools:text="1.000.000 đ" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

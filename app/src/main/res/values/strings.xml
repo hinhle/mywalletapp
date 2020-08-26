@@ -15,4 +15,10 @@
     <string name="type_text">Loại</string>
     <string name="choose_account_type">Chọn loại tài khoản</string>
     <string name="save_account">Lưu tài khoản</string>
+    <string name="waning_text">Vui lòng điền tên vào tài khoản</string>
+    <string name="income_text">NHẬP</string>
+    <string name="expenditure_button_text">CHI</string>
+    <string name="account_label_text">Tài khoản</string>
+    <string name="category_text">Thể loại</string>
+    <string name="all_categories_text">Tất cả thể loại</string>
 </resources>

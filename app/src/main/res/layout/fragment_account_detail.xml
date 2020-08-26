@@ -41,7 +41,8 @@
             android:inputType="numberDecimal"
             app:layout_constraintEnd_toEndOf="@+id/account_name_edit"
             app:layout_constraintStart_toStartOf="@+id/account_name_edit"
-            app:layout_constraintTop_toBottomOf="@+id/account_name_edit" />
+            app:layout_constraintTop_toBottomOf="@+id/account_name_edit"
+            android:text="@{String.valueOf(accountViewModel.accountBalance)}"/>
 
         <TextView
             android:id="@+id/account_type_label"
@@ -62,6 +63,17 @@
             android:layout_marginTop="32dp"
             android:text="@string/account_name_text"
             app:layout_constraintStart_toStartOf="@+id/account_name_edit"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/warning_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="@string/waning_text"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@+id/account_name_edit"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView

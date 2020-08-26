@@ -13,28 +13,29 @@ import kotlinx.coroutines.*
 class AccountDetailViewModel(
     dataSource: WalletDatabaseDao,
     application: Application
-):ViewModel() {
+) : ViewModel() {
     val database = dataSource
 
     private var viewModelJob = Job()
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-    var accountName : String = ""
-    var accountBalance : Long = 0
+    var accountName: String = ""
+    var accountBalance: Long = 0
     private var _accountType = MutableLiveData<AccountType>()
-    val accountType : LiveData<AccountType>
+    val accountType: LiveData<AccountType>
         get() = _accountType
 
     private var _navigateToFinanceTracker = MutableLiveData<Boolean>()
-    val navigateToFinanceTracker : LiveData<Boolean>
+    val navigateToFinanceTracker: LiveData<Boolean>
         get() = _navigateToFinanceTracker
 
     init {
         Log.i("AccountDetailViewModel", "GameViewModel created!")
         _accountType.value = AccountType.Normal
-        Log.i("AccountType", accountType.value?.name?: "abcd")
+        Log.i("AccountType", accountType.value?.name ?: "abcd")
     }
+
     private suspend fun insert(account: Account) {
         withContext(Dispatchers.IO) {
             database.insertAccount(account)
@@ -45,22 +46,27 @@ class AccountDetailViewModel(
         uiScope.launch {
             // Create a new night, which captures the current time,
             // and insert it into the database.
-            val newAccount = Account(AccountName = accountName, AccountBalance = accountBalance, AccountType = _accountType.value!!)
+            val newAccount = Account(
+                AccountName = accountName,
+                AccountBalance = accountBalance,
+                AccountType = _accountType.value!!
+            )
 
             insert(newAccount)
         }
     }
 
-    fun onFinanceTrackerClicked(){
+    fun onFinanceTrackerClicked() {
         _navigateToFinanceTracker.value = true
     }
-    fun onFinanceTrackerNavigated(){
+
+    fun onFinanceTrackerNavigated() {
         _navigateToFinanceTracker.value = false
     }
 
-    fun editAccountType(accountType : String){
-        Log.i("hàm edit","hàm chạy")
-        _accountType.value = when(accountType){
+    fun editAccountType(accountType: String) {
+        Log.i("hàm edit", "hàm chạy")
+        _accountType.value = when (accountType) {
             "Tiền mặt" -> AccountType.Cash
             "Thẻ tín dụng" -> AccountType.CreditCard
             "Đầu tư" -> AccountType.Investment
@@ -68,8 +74,9 @@ class AccountDetailViewModel(
             "Tài khoản tiết kiệm" -> AccountType.Savings
             else -> AccountType.Normal
         }
-        Log.i("hàm edit",_accountType.value?.vieName)
+        Log.i("hàm edit", _accountType.value?.vieName)
     }
+
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()

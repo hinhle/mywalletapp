@@ -22,13 +22,14 @@ class FinanceTrackerViewModel(
     val accounts = database.getAllAccounts()
 
     private val _navigateToAccountDetail = MutableLiveData<Boolean>()
-    val navigateToAccountDetail : LiveData<Boolean>
-    get() = _navigateToAccountDetail
+    val navigateToAccountDetail: LiveData<Boolean>
+        get() = _navigateToAccountDetail
 
-    fun onAccountDetailClicked(){
+    fun onAccountDetailClicked() {
         _navigateToAccountDetail.value = true
     }
-    fun onAccountDetailNavigated(){
+
+    fun onAccountDetailNavigated() {
         _navigateToAccountDetail.value = false
     }
 

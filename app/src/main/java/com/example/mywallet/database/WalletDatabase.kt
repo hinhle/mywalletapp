@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 
 @Database(entities = [Account::class, Transaction::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
-abstract class WalletDatabase : RoomDatabase(){
+abstract class WalletDatabase : RoomDatabase() {
     /**
      * Connects the database to the DAO.
      */

@@ -5,16 +5,16 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "account_table")
-data class Account (
+data class Account(
     @PrimaryKey(autoGenerate = true)
-    var AccountID : Long = 0L,
+    var AccountID: Long = 0L,
 
     @ColumnInfo(name = "account_name")
-    var AccountName : String = "Tiền mặt",
+    var AccountName: String = "Tiền mặt",
 
     @ColumnInfo(name = "account_balance")
-    var AccountBalance : Long= 0L,
+    var AccountBalance: Long = 0L,
 
     @ColumnInfo(name = "account_type")
-    var AccountType : AccountType = com.example.mywallet.database.AccountType.Normal
+    var AccountType: AccountType = com.example.mywallet.database.AccountType.Normal
 )
