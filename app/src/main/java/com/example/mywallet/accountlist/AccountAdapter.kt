@@ -1,5 +1,4 @@
-package com.example.mywallet.transactioncategory
-
+package com.example.mywallet.accountlist
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -9,8 +8,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mywallet.R
-import com.example.mywallet.database.Category
-import com.example.mywallet.databinding.ListItemTransactionCategoryBinding
+import com.example.mywallet.database.Account
+import com.example.mywallet.databinding.ListItemAccountLinearBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,15 +18,16 @@ import kotlinx.coroutines.withContext
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_ITEM = 1
 
-class CategoryAdapter(val clickListener: CategoryListener) :
-    ListAdapter<DataItem, RecyclerView.ViewHolder>(CategoryDiffCallback()) {
+
+class AccountAdapter(val clickListener: AccountListener) :
+    ListAdapter<DataItem, RecyclerView.ViewHolder>(AccountDiffCallback()) {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ViewHolder -> {
-                val categoryItem = getItem(position) as DataItem.CategoryItem
-                holder.bind(categoryItem.category, clickListener)
+                val Item = getItem(position) as DataItem.AccountItem
+                holder.bind(Item.account, clickListener)
             }
 
         }
@@ -45,15 +45,15 @@ class CategoryAdapter(val clickListener: CategoryListener) :
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is DataItem.Header -> ITEM_VIEW_TYPE_HEADER
-            is DataItem.CategoryItem -> ITEM_VIEW_TYPE_ITEM
+            is DataItem.AccountItem -> ITEM_VIEW_TYPE_ITEM
         }
     }
 
-    fun addHeaderAndSubmitList(list: List<Category>?) {
+    fun addHeaderAndSubmitList(list: List<Account>?) {
         adapterScope.launch {
             val items = when (list) {
                 null -> listOf(DataItem.Header)
-                else -> listOf(DataItem.Header) + list.map { DataItem.CategoryItem(it) }
+                else -> listOf(DataItem.Header) + list.map { DataItem.AccountItem(it) }
             }
             withContext(Dispatchers.Main) {
                 submitList(items)
@@ -67,63 +67,65 @@ class CategoryAdapter(val clickListener: CategoryListener) :
         companion object {
             fun from(parent: ViewGroup): TextViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val view = layoutInflater.inflate(R.layout.category_list_header, parent, false)
+                val view = layoutInflater.inflate(R.layout.account_list_header, parent, false)
                 return TextViewHolder(view)
             }
         }
     }
 
 
-}
+    class ViewHolder private constructor(val binding: ListItemAccountLinearBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-class ViewHolder private constructor(val binding: ListItemTransactionCategoryBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: Account, clickListener: AccountListener) {
+            binding.account = item
+            binding.clickListener = clickListener
+            binding.executePendingBindings()
+        }
 
-    fun bind(item: Category, clickListener: CategoryListener) {
-        binding.category = item
-        binding.clickListener = clickListener
-        binding.executePendingBindings()
-    }
-
-    companion object {
-        fun from(parent: ViewGroup): ViewHolder {
-            val layoutInflater = LayoutInflater.from(parent.context)
-            val binding = ListItemTransactionCategoryBinding.inflate(layoutInflater, parent, false)
-            return ViewHolder(binding)
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ListItemAccountLinearBinding.inflate(layoutInflater, parent, false)
+                return ViewHolder(binding)
+            }
         }
     }
 }
 
 
-class CategoryDiffCallback : DiffUtil.ItemCallback<DataItem>() {
+class AccountDiffCallback : DiffUtil.ItemCallback<DataItem>() {
+
     override fun areItemsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
         return oldItem.id == newItem.id
     }
+
     @SuppressLint("DiffUtilEquals")
     override fun areContentsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
         return oldItem == newItem
     }
 
+
 }
 
-
-class CategoryListener(val clickListener: (name: String) -> Unit) {
-    fun onClick(category: Category) = clickListener(category.name)
+class AccountListener(val clickListener: (accountID: Long, accountName: String) -> Unit) {
+    fun onClick(account: Account) = clickListener(account.AccountID, account.AccountName)
 }
 
 
 sealed class DataItem {
-    abstract val id: Int
+    abstract val id: Long
 
 
-    data class CategoryItem(val category: Category) : DataItem() {
-        override val id: Int
-            get() = category.ordinal
+    data class AccountItem(val account: Account) : DataItem() {
+        override val id: Long
+            get() = account.AccountID
     }
 
     object Header : DataItem() {
-        override val id: Int
-            get() = Int.MIN_VALUE
+        override val id: Long
+            get() = Long.MIN_VALUE
     }
+
 
 }

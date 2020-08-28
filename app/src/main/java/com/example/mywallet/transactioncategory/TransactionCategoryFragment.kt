@@ -1,5 +1,6 @@
 package com.example.mywallet.transactioncategory
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,12 @@ class TransactionCategoryFragment : Fragment() {
         )
         val adapter = CategoryAdapter(
             CategoryListener {
+                val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return@CategoryListener
+                with (sharedPref.edit()) {
+                    putString(getString(R.string.category_name_key), it)
+                    apply()
+                }
+
                 this.findNavController().navigate(
                     TransactionCategoryFragmentDirections.actionTransactionCategoryFragmentToTransactionFormFragment()
                         .setCategory(it)
@@ -44,6 +51,8 @@ class TransactionCategoryFragment : Fragment() {
 
         binding.categoryList.adapter = adapter
         adapter.addHeaderAndSubmitList(data)
+
+
 
         // Inflate the layout for this fragment
         return binding.root

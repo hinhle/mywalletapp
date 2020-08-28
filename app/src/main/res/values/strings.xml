@@ -21,4 +21,7 @@
     <string name="account_label_text">Tài khoản</string>
     <string name="category_text">Thể loại</string>
     <string name="all_categories_text">Tất cả thể loại</string>
+    <string name="account_id_key">ACCOUNTID</string>
+    <string name="category_name_key">CATEGORYNAME</string>
+    <string name="account_name_key">ACCOUNTNAME</string>
 </resources>

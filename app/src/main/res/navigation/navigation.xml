@@ -45,10 +45,13 @@
         <action
             android:id="@+id/action_transactionFormFragment_to_transactionCategoryFragment"
             app:destination="@id/transactionCategoryFragment" />
-        <argument
-            android:name="category"
-            app:argType="string"
-            android:defaultValue="Khác" />
+        <action
+            android:id="@+id/action_transactionFormFragment_to_accountListFragment"
+            app:destination="@id/accountListFragment" />
+        <action
+            android:id="@+id/action_transactionFormFragment_to_financeTrackerFragment"
+            app:destination="@id/financeTrackerFragment"
+            app:popUpTo="@id/financeTrackerFragment" />
     </fragment>
     <fragment
         android:id="@+id/transactionCategoryFragment"
@@ -57,10 +60,23 @@
         tools:layout="@layout/fragment_transaction_category" >
         <action
             android:id="@+id/action_transactionCategoryFragment_to_transactionFormFragment"
-            app:destination="@id/transactionFormFragment" >
+            app:destination="@id/transactionFormFragment"
+            app:popUpTo="@id/transactionFormFragment"
+            app:popUpToInclusive="true">
             <argument
                 android:name="category"
                 android:defaultValue="Khác" />
         </action>
+    </fragment>
+    <fragment
+        android:id="@+id/accountListFragment"
+        android:name="com.example.mywallet.accountlist.AccountListFragment"
+        android:label="fragment_account_list"
+        tools:layout="@layout/fragment_account_list" >
+        <action
+            android:id="@+id/action_accountListFragment_to_transactionFormFragment"
+            app:destination="@id/transactionFormFragment"
+            app:popUpTo="@id/transactionFormFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

@@ -16,4 +16,10 @@ interface WalletDatabaseDao {
 
     @Query("SELECT * FROM account_table ORDER BY AccountID DESC")
     fun getAllAccounts(): LiveData<List<Account>>
+
+    @Insert
+    fun insertTransaction(transaction: Transaction)
+
+    @Query("SELECT * FROM account_table WHERE AccountID = :key")
+    fun getAccount(key : Long) : Account
 }

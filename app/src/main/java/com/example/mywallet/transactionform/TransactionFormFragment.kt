@@ -1,17 +1,22 @@
 package com.example.mywallet.transactionform
 
 
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.example.mywallet.R
+import com.example.mywallet.database.Category
+import com.example.mywallet.database.WalletDatabase
 import com.example.mywallet.databinding.FragmentTransactionFormBinding
+import com.google.android.material.snackbar.Snackbar
 import net.objecthunter.exp4j.ExpressionBuilder
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -28,16 +33,21 @@ class TransactionFormFragment : Fragment() {
 
     // Represent whether the lastly pressed key is numeric or not
     var lastNumeric: Boolean = false
-
     // Represent that current state is in error or not
     var stateError: Boolean = false
-
     // If true, do not allow to add another DOT
     var lastDot: Boolean = false
-
     private var expression = ""
     private var numberString = ""
     val formatter: NumberFormat = DecimalFormat("#,###")
+
+    private lateinit var transactionFormViewModel: TransactionFormViewModel
+
+    private lateinit var categoryArg : Category
+    private  var accountIDArg: Long = 0L
+
+    private var money : Long = 0L
+    get() = if (!txtInput.text.toString().isNullOrEmpty()) numberString.toLong() else 0L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,8 +57,20 @@ class TransactionFormFragment : Fragment() {
             inflater,
             R.layout.fragment_transaction_form, container, false
         )
+
+        val application = requireNotNull(this.activity).application
+
+        // Create an instance of the ViewModel Factory.
+        val dataSource = WalletDatabase.getInstance(application).walletDatabaseDao
+        val viewModelFactory = TransactionFormViewModelFactory(dataSource, application)
+        transactionFormViewModel =
+            ViewModelProviders.of(
+                this, viewModelFactory
+            ).get(TransactionFormViewModel::class.java)
+
         //val view = inflater.inflate(R.layout.fragment_transaction_form, container, false)
         txtInput = binding.txtInput
+
         val digitViews = listOf(
             binding.btnOne, binding.btnTwo,
             binding.btnThree, binding.btnFour,
@@ -56,33 +78,74 @@ class TransactionFormFragment : Fragment() {
             binding.btnSeven, binding.btnEight,
             binding.btnNine, binding.btnZero
         )
-
         digitViews.forEach { it.setOnClickListener { onDigit(it) } }
 
         val operatorViews = listOf(
             binding.btnAdd, binding.btnSubtract,
             binding.btnMultiply, binding.btnDivide
         )
-
         operatorViews.forEach { it.setOnClickListener { onOperator(it) } }
 
         binding.btnClear.setOnClickListener { onClear(it) }
         binding.btnEqual.setOnClickListener { onEqual(it) }
 
         binding.signText.text = "+"
+
         binding.incomeButton.setOnClickListener {
             binding.signText.text = "+"
+            transactionFormViewModel.isIncome = true
         }
         binding.expenditureButton.setOnClickListener {
             binding.signText.text = "-"
+            transactionFormViewModel.isIncome = false
         }
+
         binding.categoryLabel.setOnClickListener { navigateToCategoryList() }
         binding.categoryText.setOnClickListener { navigateToCategoryList() }
 
-        val args = TransactionFormFragmentArgs.fromBundle(arguments!!)
-        binding.categoryText.text = args.category
+        //val args = TransactionFormFragmentArgs.fromBundle(arguments!!)
+
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return binding.root
+        val categoryPref = sharedPref.getString(getString(R.string.category_name_key),Category.Other.name)
+        val accountName = sharedPref.getString(getString(R.string.account_name_key),"Chọn tài khoản")
+        categoryArg = Category.valueOf(categoryPref!!)
+        accountIDArg= sharedPref.getLong(getString(R.string.account_id_key), -1L)
+//        if (args.accountId != -1L){
+//            onSave(args.accountId, categoryArg)
+//        }
+
+        binding.categoryText.text = categoryArg.vieName
+        binding.accountText.text = accountName
+
+        binding.accountLabel.setOnClickListener { navigateToAccountList() }
+        binding.accountText.setOnClickListener { navigateToAccountList() }
+
+        setHasOptionsMenu(true)
         // Inflate the layout for this fragment
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.adding_account_menu, menu)
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+
+            R.id.saveAccount -> {
+                Log.i("Button clicked","OK")
+                if (accountIDArg != -1L && isValidated()){
+                    Log.i("inside if block", "OK")
+                    onSave(accountID = accountIDArg, category = categoryArg)
+                }
+
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
     }
 
     fun onDigit(view: View) {
@@ -173,6 +236,32 @@ class TransactionFormFragment : Fragment() {
     fun navigateToCategoryList() {
         this.findNavController().navigate(
             TransactionFormFragmentDirections.actionTransactionFormFragmentToTransactionCategoryFragment()
+        )
+    }
+
+    fun navigateToAccountList() {
+        this.findNavController().navigate(
+            TransactionFormFragmentDirections.actionTransactionFormFragmentToAccountListFragment()
+        )
+    }
+
+    fun onSave(accountID : Long, category: Category){
+        transactionFormViewModel.onSave(accountID, category)
+        Log.i("TransactionFormFragment",accountID.toString())
+        transactionFormViewModel.onChangeBalance(money, accountID)
+        Toast.makeText(context,"Thêm giao dịch thành công",Toast.LENGTH_SHORT)
+    }
+    fun isValidated() : Boolean {
+        if (txtInput.text.toString().isNullOrEmpty()){
+            Snackbar.make(view!!, "Xin vui lòng nhập số tiền", Snackbar.LENGTH_SHORT)
+                .show()
+            return false
+        }
+        return true
+    }
+    fun navigateToFinanceTracker(){
+        this.findNavController().navigate(
+            TransactionFormFragmentDirections.actionTransactionFormFragmentToFinanceTrackerFragment()
         )
     }
 }
