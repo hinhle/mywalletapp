@@ -36,7 +36,7 @@ object Converters {
     @TypeConverter
     @JvmStatic
     fun fromCategory(category: Category): String {
-        return category.vieName
+        return category.name
     }
 
     @TypeConverter
@@ -50,7 +50,7 @@ object Converters {
     @TypeConverter
     @JvmStatic
     fun fromPayment(payment: Payment): String {
-        return payment.vieName
+        return payment.name
     }
 
     @TypeConverter

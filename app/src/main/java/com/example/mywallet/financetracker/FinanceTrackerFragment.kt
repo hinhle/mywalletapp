@@ -49,11 +49,23 @@ class FinanceTrackerFragment : Fragment() {
             FooterListener {
                 financeTrackerViewModel.onAccountDetailClicked()
             })
+        val transAdapter = TransactionAdapter(
+            TransactionListener { transactionID ->
+                Toast.makeText(activity!!.applicationContext, "$transactionID", Toast.LENGTH_LONG).show()
+            }
+        )
         binding.accountList.adapter = adapter
+        binding.transactionLimitList.adapter = transAdapter
 
         financeTrackerViewModel.accounts.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.addHeaderAndSubmitList(it)
+            }
+        })
+
+        financeTrackerViewModel.transactions.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                transAdapter.addHeaderAndSubmitList(it)
             }
         })
 

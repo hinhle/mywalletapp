@@ -24,4 +24,8 @@
     <string name="account_id_key">ACCOUNTID</string>
     <string name="category_name_key">CATEGORYNAME</string>
     <string name="account_name_key">ACCOUNTNAME</string>
+    <string name="number_string_key">NUMBERKEY</string>
+    <string name="is_income_key">ISINCOMEKEY</string>
+    <string name="transaction_list_header_text">Tổng quan các giao dịch gần đây</string>
+    <string name="show_more_text">Hiển thị thêm</string>
 </resources>

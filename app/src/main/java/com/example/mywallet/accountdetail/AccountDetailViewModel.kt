@@ -39,6 +39,7 @@ class AccountDetailViewModel(
     private suspend fun insert(account: Account) {
         withContext(Dispatchers.IO) {
             database.insertAccount(account)
+            Log.i("accountInsert","Success")
         }
     }
 

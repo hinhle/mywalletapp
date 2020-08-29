@@ -20,6 +20,7 @@ class FinanceTrackerViewModel(
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     val accounts = database.getAllAccounts()
+    val transactions = database.getAllTransactions()
 
     private val _navigateToAccountDetail = MutableLiveData<Boolean>()
     val navigateToAccountDetail: LiveData<Boolean>

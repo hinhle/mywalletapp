@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -53,7 +54,7 @@ class TransactionCategoryFragment : Fragment() {
         adapter.addHeaderAndSubmitList(data)
 
 
-
+        (activity as AppCompatActivity).title = "Thể loại"
         // Inflate the layout for this fragment
         return binding.root
     }

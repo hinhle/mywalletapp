@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
@@ -20,13 +21,9 @@ import com.google.android.material.snackbar.Snackbar
 import net.objecthunter.exp4j.ExpressionBuilder
 import java.text.DecimalFormat
 import java.text.NumberFormat
+import kotlin.math.roundToLong
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TransactionFormFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class TransactionFormFragment : Fragment() {
     // TextView used to display the input and output
     lateinit var txtInput: TextView
@@ -38,35 +35,38 @@ class TransactionFormFragment : Fragment() {
     // If true, do not allow to add another DOT
     var lastDot: Boolean = false
     private var expression = ""
-    private var numberString = ""
+    //private var numberString = ""
     val formatter: NumberFormat = DecimalFormat("#,###")
 
-    private lateinit var transactionFormViewModel: TransactionFormViewModel
+    private lateinit var transactionFormViewModel : TransactionFormViewModel
 
     private lateinit var categoryArg : Category
     private  var accountIDArg: Long = 0L
 
+    private  var numberString = ""
     private var money : Long = 0L
     get() = if (!txtInput.text.toString().isNullOrEmpty()) numberString.toLong() else 0L
+
+    private lateinit var binding : FragmentTransactionFormBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentTransactionFormBinding>(
+        binding = DataBindingUtil.inflate<FragmentTransactionFormBinding>(
             inflater,
             R.layout.fragment_transaction_form, container, false
         )
 
+        // Create an instance of the ViewModel Factory.
         val application = requireNotNull(this.activity).application
 
         // Create an instance of the ViewModel Factory.
         val dataSource = WalletDatabase.getInstance(application).walletDatabaseDao
         val viewModelFactory = TransactionFormViewModelFactory(dataSource, application)
-        transactionFormViewModel =
-            ViewModelProviders.of(
-                this, viewModelFactory
-            ).get(TransactionFormViewModel::class.java)
+        transactionFormViewModel = ViewModelProviders.of(
+            this, viewModelFactory
+        ).get(TransactionFormViewModel::class.java)
 
         //val view = inflater.inflate(R.layout.fragment_transaction_form, container, false)
         txtInput = binding.txtInput
@@ -103,16 +103,24 @@ class TransactionFormFragment : Fragment() {
         binding.categoryLabel.setOnClickListener { navigateToCategoryList() }
         binding.categoryText.setOnClickListener { navigateToCategoryList() }
 
-        //val args = TransactionFormFragmentArgs.fromBundle(arguments!!)
-
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return binding.root
         val categoryPref = sharedPref.getString(getString(R.string.category_name_key),Category.Other.name)
         val accountName = sharedPref.getString(getString(R.string.account_name_key),"Chọn tài khoản")
+        transactionFormViewModel.isIncome = sharedPref.getBoolean(getString(R.string.is_income_key),true)
         categoryArg = Category.valueOf(categoryPref!!)
         accountIDArg= sharedPref.getLong(getString(R.string.account_id_key), -1L)
-//        if (args.accountId != -1L){
-//            onSave(args.accountId, categoryArg)
-//        }
+        numberString = sharedPref.getString(getString(R.string.number_string_key),"")!!
+        if (!numberString.isNullOrEmpty()){
+            txtInput.text = formatter.format(numberString.toLong())
+            lastNumeric = true
+            expression += numberString
+        }
+        if (transactionFormViewModel.isIncome == true){
+            binding.signText.text = "+"
+        }
+        else {
+            binding.signText.text = "-"
+        }
 
         binding.categoryText.text = categoryArg.vieName
         binding.accountText.text = accountName
@@ -121,6 +129,8 @@ class TransactionFormFragment : Fragment() {
         binding.accountText.setOnClickListener { navigateToAccountList() }
 
         setHasOptionsMenu(true)
+
+        (activity as AppCompatActivity).title = ""
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -133,12 +143,18 @@ class TransactionFormFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-
+            android.R.id.home -> {
+                deleteSharePref()
+                findNavController().navigateUp()
+                true
+            }
             R.id.saveAccount -> {
                 Log.i("Button clicked","OK")
                 if (accountIDArg != -1L && isValidated()){
                     Log.i("inside if block", "OK")
                     onSave(accountID = accountIDArg, category = categoryArg)
+                    deleteSharePref()
+                    navigateToFinanceTracker()
                 }
 
                 true
@@ -169,7 +185,7 @@ class TransactionFormFragment : Fragment() {
     /**
      * Append . to the TextView
      */
-    fun onDecimalPoint(view: View) {
+    /*fun onDecimalPoint(view: View) {
         if (lastNumeric && !stateError && !lastDot) {
             numberString = numberString.dropLast(1)
             val str = formatter.format(numberString.toLong())
@@ -178,7 +194,7 @@ class TransactionFormFragment : Fragment() {
             lastNumeric = false
             lastDot = true
         }
-    }
+    }*/
 
     /**
      * Append +,-,*,/ operators to the TextView
@@ -190,6 +206,7 @@ class TransactionFormFragment : Fragment() {
             //txtInput.append((view as Button).text)
             lastNumeric = false
             lastDot = false    // Reset the DOT flag
+            stateError = true
         }
     }
 
@@ -200,6 +217,7 @@ class TransactionFormFragment : Fragment() {
     fun onClear(view: View) {
         expression = ""
         this.txtInput.text = ""
+        numberString = ""
         lastNumeric = false
         stateError = false
         lastDot = false
@@ -219,10 +237,10 @@ class TransactionFormFragment : Fragment() {
             try {
                 // Calculate the result and display
                 val result = expression.evaluate()
-                txtInput.text = formatter.format(result)
+                txtInput.text = formatter.format(result.roundToLong() )
                 lastDot = true // Result contains a dot
-                numberString = result.toString()
-                this.expression = result.toString()
+                numberString = result.roundToLong().toString()
+                this.expression = result.roundToLong().toString()
             } catch (ex: ArithmeticException) {
                 // Display an error message
                 txtInput.text = "Error"
@@ -237,24 +255,33 @@ class TransactionFormFragment : Fragment() {
         this.findNavController().navigate(
             TransactionFormFragmentDirections.actionTransactionFormFragmentToTransactionCategoryFragment()
         )
+        saveNumberString()
     }
 
     fun navigateToAccountList() {
         this.findNavController().navigate(
             TransactionFormFragmentDirections.actionTransactionFormFragmentToAccountListFragment()
         )
+        saveNumberString()
     }
 
     fun onSave(accountID : Long, category: Category){
         transactionFormViewModel.onSave(accountID, category)
         Log.i("TransactionFormFragment",accountID.toString())
-        transactionFormViewModel.onChangeBalance(money, accountID)
-        Toast.makeText(context,"Thêm giao dịch thành công",Toast.LENGTH_SHORT)
+        transactionFormViewModel.onChangeBalance(money = money, key = accountID)
+        //Toast.makeText(context,"Thêm giao dịch thành công",Toast.LENGTH_SHORT)
     }
     fun isValidated() : Boolean {
         if (txtInput.text.toString().isNullOrEmpty()){
-            Snackbar.make(view!!, "Xin vui lòng nhập số tiền", Snackbar.LENGTH_SHORT)
+            Snackbar.make(activity!!.findViewById(android.R.id.content), "Xin vui lòng nhập số tiền", Snackbar.LENGTH_SHORT)
                 .show()
+            //Toast.makeText(activity!!.applicationContext,"Xin vui lòng nhập số tiền",Toast.LENGTH_SHORT).show()
+            return false
+        }
+        if (binding.accountText.toString() == "Chọn tài khoản"){
+            Snackbar.make(activity!!.findViewById(android.R.id.content), "Xin vui lòng chọn tài khoản", Snackbar.LENGTH_SHORT)
+                .show()
+            //Toast.makeText(activity!!.applicationContext,"Xin vui lòng chọn tài khoản",Toast.LENGTH_SHORT).show()
             return false
         }
         return true
@@ -263,5 +290,24 @@ class TransactionFormFragment : Fragment() {
         this.findNavController().navigate(
             TransactionFormFragmentDirections.actionTransactionFormFragmentToFinanceTrackerFragment()
         )
+    }
+    fun saveNumberString(){
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putString(getString(R.string.number_string_key),numberString )
+            putBoolean(getString(R.string.is_income_key),transactionFormViewModel.isIncome)
+            apply()
+        }
+    }
+    fun deleteSharePref(){
+        val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            remove(getString(R.string.number_string_key))
+            remove(getString(R.string.is_income_key))
+            remove(getString(R.string.account_id_key))
+            remove(getString(R.string.account_name_key))
+            remove(getString(R.string.category_name_key))
+            apply()
+        }
     }
 }

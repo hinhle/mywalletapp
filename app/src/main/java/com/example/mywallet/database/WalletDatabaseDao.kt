@@ -12,10 +12,20 @@ interface WalletDatabaseDao {
     fun insertAccount(account: Account)
 
     @Update
-    fun updateAccount(account: Account)
+    fun updateAccount(account: Account) : Int
+
+    @Query("UPDATE account_table SET account_balance = :money WHERE AccountID = :key")
+    fun updateAccount(key: Long, money : Long)
 
     @Query("SELECT * FROM account_table ORDER BY AccountID DESC")
     fun getAllAccounts(): LiveData<List<Account>>
+
+    @Query("SELECT * FROM transaction_table ORDER BY TransID DESC LIMIT :limit")
+    fun getAllTransactionsLimit(limit : Int): LiveData<List<Transaction>>
+
+    @Query("SELECT * FROM transaction_table ORDER BY TransID DESC ")
+    fun getAllTransactions(): LiveData<List<Transaction>>
+
 
     @Insert
     fun insertTransaction(transaction: Transaction)

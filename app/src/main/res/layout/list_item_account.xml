@@ -18,8 +18,7 @@
         android:id="@+id/account_item_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/item_margin"
-        android:layout_marginTop="@dimen/item_margin"
+        android:layout_margin="8dp"
         app:cardBackgroundColor="@color/cardview_background"
         app:cardCornerRadius="@dimen/cardview_radius">
 
