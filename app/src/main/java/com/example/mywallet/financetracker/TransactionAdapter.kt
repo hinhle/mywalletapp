@@ -1,7 +1,6 @@
 package com.example.mywallet.financetracker
 
 
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,20 +8,21 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mywallet.R
-import com.example.mywallet.database.Transaction
 import com.example.mywallet.databinding.ListItemTransactionBinding
 import com.example.mywallet.databinding.TransactionLimitListFooterBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.ClassCastException
 
 private const val ITEM_VIEW_TYPE_HEADER = 0
 private const val ITEM_VIEW_TYPE_ITEM = 1
 private const val ITEM_VIEW_TYPE_FOOTER = 2
 
-class TransactionAdapter(val clickListener : TransactionListener, val footerClickListener : TransFooterListener? = null) : ListAdapter<DataItemII, RecyclerView.ViewHolder>(TransactionDiffCallback()) {
+class TransactionAdapter(
+    val clickListener: TransactionListener,
+    val footerClickListener: TransFooterListener? = null
+) : ListAdapter<DataItemII, RecyclerView.ViewHolder>(TransactionDiffCallback()) {
 
     private val adapterScope = CoroutineScope(Dispatchers.Default)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -48,20 +48,22 @@ class TransactionAdapter(val clickListener : TransactionListener, val footerClic
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (getItem(position)){
+        return when (getItem(position)) {
             is DataItemII.Header -> ITEM_VIEW_TYPE_HEADER
             is DataItemII.Footer -> ITEM_VIEW_TYPE_FOOTER
             is DataItemII.TransItem -> ITEM_VIEW_TYPE_ITEM
         }
     }
 
-    fun addHeaderAndSubmitList(list : List<Transaction>?){
+    fun addHeaderAndSubmitList(list: List<TransactionListView>?) {
         adapterScope.launch {
             val items = when (list) {
                 null -> listOf(DataItemII.Header, DataItemII.Footer)
-                else -> listOf(DataItemII.Header) + list.map {DataItemII.TransItem(it)} + listOf(DataItemII.Footer)
+                else -> listOf(DataItemII.Header) + list.map { DataItemII.TransItem(it) } + listOf(
+                    DataItemII.Footer
+                )
             }
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 submitList(items)
             }
         }
@@ -69,17 +71,19 @@ class TransactionAdapter(val clickListener : TransactionListener, val footerClic
 
     }
 
-    class TextViewHolder(view : View) : RecyclerView.ViewHolder(view){
-        companion object{
-            fun from(parent: ViewGroup) : TextViewHolder {
+    class TextViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        companion object {
+            fun from(parent: ViewGroup): TextViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val view = layoutInflater.inflate(R.layout.transaction_limit_list_header, parent, false)
+                val view =
+                    layoutInflater.inflate(R.layout.transaction_limit_list_header, parent, false)
                 return TextViewHolder(view)
             }
         }
     }
 
-    class FooterViewHolder(val binding : TransactionLimitListFooterBinding) : RecyclerView.ViewHolder(binding.root){
+    class FooterViewHolder(val binding: TransactionLimitListFooterBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(clickListener: TransFooterListener?) {
             clickListener?.let {
                 binding.clickListener = it
@@ -87,20 +91,23 @@ class TransactionAdapter(val clickListener : TransactionListener, val footerClic
             }
 
         }
-        companion object{
-            fun from(parent: ViewGroup) : FooterViewHolder {
+
+        companion object {
+            fun from(parent: ViewGroup): FooterViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = TransactionLimitListFooterBinding.inflate(layoutInflater, parent, false)
+                val binding =
+                    TransactionLimitListFooterBinding.inflate(layoutInflater, parent, false)
                 return FooterViewHolder(binding)
             }
         }
     }
 
-    class ViewHolder private constructor(val binding: ListItemTransactionBinding) : RecyclerView.ViewHolder(binding.root){
+    class ViewHolder private constructor(val binding: ListItemTransactionBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Transaction, clickListener: TransactionListener) {
+        fun bind(item: TransactionListView, clickListener: TransactionListener) {
             binding.transaction = item
-            binding.clickListener= clickListener
+            binding.clickListener = clickListener
             binding.executePendingBindings()
         }
 
@@ -118,7 +125,7 @@ class TransactionAdapter(val clickListener : TransactionListener, val footerClic
 class TransactionDiffCallback : DiffUtil.ItemCallback<DataItemII>() {
 
     override fun areItemsTheSame(oldItem: DataItemII, newItem: DataItemII): Boolean {
-       return oldItem.id == newItem.id
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: DataItemII, newItem: DataItemII): Boolean {
@@ -127,10 +134,11 @@ class TransactionDiffCallback : DiffUtil.ItemCallback<DataItemII>() {
 
 }
 
-class TransactionListener(val clickListener : (transactionID : Long) -> Unit) {
-    fun onClick(transaction: Transaction) = clickListener(transaction.TransID)
+class TransactionListener(val clickListener: (transactionID: Long) -> Unit) {
+    fun onClick(transaction: TransactionListView) = clickListener(transaction.TransID)
 }
-class TransFooterListener(val clickListener : () -> Unit) {
+
+class TransFooterListener(val clickListener: () -> Unit) {
     fun onClick() = clickListener()
 }
 
@@ -138,7 +146,7 @@ sealed class DataItemII {
     abstract val id: Long
 
 
-    data class TransItem(val transaction: Transaction) : DataItemII() {
+    data class TransItem(val transaction: TransactionListView) : DataItemII() {
         override val id: Long
             get() = transaction.TransID
     }

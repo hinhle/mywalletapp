@@ -6,7 +6,7 @@
     <data>
         <variable
             name="transaction"
-            type="com.example.mywallet.database.Transaction" />
+            type="com.example.mywallet.financetracker.TransactionListView" />
         <variable
             name="clickListener"
             type="com.example.mywallet.financetracker.TransactionListener" />
@@ -36,7 +36,7 @@
                     android:id="@+id/category_image"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    app:srcCompat="@drawable/ic_baseline_directions_car_24" />
+                    setCategoryImage="@{transaction}" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -63,7 +63,7 @@
             app:layout_constraintStart_toStartOf="@+id/category_text"
             app:layout_constraintTop_toBottomOf="@+id/category_text"
             tools:text="Tiền mặt"
-            android:text="@{String.valueOf(transaction.accountID)}"/>
+            android:text="@{transaction.accountName}"/>
 
         <TextView
             android:id="@+id/money_text"

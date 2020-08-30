@@ -58,7 +58,7 @@ class AccountListFragment : Fragment() {
             }
         })
 
-        (activity as AppCompatActivity).title = "Tài khoản"
+        (activity as AppCompatActivity).supportActionBar?.title = "Tài khoản"
         return view
     }
 

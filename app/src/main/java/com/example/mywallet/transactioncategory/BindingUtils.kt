@@ -19,6 +19,11 @@ fun ImageView.setCategoryImage(item: Category){
         Category.Vehicle -> R.drawable.ic_baseline_directions_car_24
         Category.Finance -> R.drawable.ic_baseline_attach_money_24
         Category.Entertainment-> R.drawable.ic_baseline_accessibility_new_24
+        Category.Shopping -> R.drawable.ic_baseline_shopping_cart_24
+        Category.Transportation -> R.drawable.ic_baseline_directions_car_24
+        Category.Media -> R.drawable.ic_baseline_emoji_objects_24
+        Category.Investment -> R.drawable.ic_baseline_monetization_on_24
+        Category.Income -> R.drawable.ic_baseline_emoji_transportation_24
 
         else -> R.drawable.ic_baseline_add_24
     })

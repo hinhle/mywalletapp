@@ -130,7 +130,7 @@ class TransactionFormFragment : Fragment() {
 
         setHasOptionsMenu(true)
 
-        (activity as AppCompatActivity).title = ""
+        (activity as AppCompatActivity).supportActionBar?.title = ""
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -266,7 +266,7 @@ class TransactionFormFragment : Fragment() {
     }
 
     fun onSave(accountID : Long, category: Category){
-        transactionFormViewModel.onSave(accountID, category)
+        transactionFormViewModel.onSave(accountID, category, money)
         Log.i("TransactionFormFragment",accountID.toString())
         transactionFormViewModel.onChangeBalance(money = money, key = accountID)
         //Toast.makeText(context,"Thêm giao dịch thành công",Toast.LENGTH_SHORT)

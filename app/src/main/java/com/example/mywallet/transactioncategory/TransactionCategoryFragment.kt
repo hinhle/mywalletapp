@@ -54,7 +54,7 @@ class TransactionCategoryFragment : Fragment() {
         adapter.addHeaderAndSubmitList(data)
 
 
-        (activity as AppCompatActivity).title = "Thể loại"
+        (activity as AppCompatActivity).supportActionBar?.title = "Thể loại"
         // Inflate the layout for this fragment
         return binding.root
     }

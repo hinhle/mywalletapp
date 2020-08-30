@@ -25,5 +25,7 @@ data class Transaction(
     @ColumnInfo(name = "transaction_payment")
     var Payment: Payment = com.example.mywallet.database.Payment.Cash,
     @ColumnInfo(name = "transaction_payee")
-    var Payee: String = ""
+    var Payee: String = "",
+    @ColumnInfo(name = "transaction_is_income")
+    var isIncome: Boolean = true
 )

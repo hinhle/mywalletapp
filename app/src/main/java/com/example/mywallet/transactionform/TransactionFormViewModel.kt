@@ -20,9 +20,9 @@ class TransactionFormViewModel(dataSource: WalletDatabaseDao,
 
     var isIncome : Boolean = true
 
-    fun onSave(accountID : Long, category : Category){
+    fun onSave(accountID : Long, category : Category, money: Long){
         uiScope.launch {
-            val transaction = Transaction(AccountID = accountID, TransCategory = category)
+            val transaction = Transaction(AccountID = accountID, TransCategory = category, TransMoney = money, isIncome = isIncome)
             insert(transaction)
         }
 
