@@ -28,4 +28,9 @@
     <string name="is_income_key">ISINCOMEKEY</string>
     <string name="transaction_list_header_text">Tổng quan các giao dịch gần đây</string>
     <string name="show_more_text">Hiển thị thêm</string>
+    <string name="seven_day_text">7D</string>
+    <string name="thirty_day_text">30D</string>
+    <string name="twelve_week_text">12W</string>
+    <string name="six_month_text">6M</string>
+    <string name="one_year_text">1Y</string>
 </resources>

@@ -54,6 +54,12 @@ class FinanceTrackerFragment : Fragment() {
             TransactionListener { transactionID ->
                 Toast.makeText(activity!!.applicationContext, "$transactionID", Toast.LENGTH_LONG)
                     .show()
+            },
+            TransFooterListener {
+                financeTrackerViewModel.onClick()
+                this.findNavController().navigate(
+                    FinanceTrackerFragmentDirections.actionFinanceTrackerFragmentToTransactionStatisticFragment()
+                )
             }
         )
         binding.accountList.adapter = adapter

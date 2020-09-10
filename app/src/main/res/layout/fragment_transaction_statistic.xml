@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/statistic_constraint_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".transactionstatistic.TransactionStatisticFragment">
+
+        <Button
+            android:id="@+id/seven_day_button"
+            android:layout_width="0dp"
+            android:layout_height="43dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/seven_day_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/thirty_day_button"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/thirty_day_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/thirty_day_text"
+            app:layout_constraintBottom_toBottomOf="@+id/seven_day_button"
+            app:layout_constraintEnd_toStartOf="@+id/twelve_week_button"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/seven_day_button"
+            app:layout_constraintTop_toTopOf="@+id/seven_day_button" />
+
+        <Button
+            android:id="@+id/twelve_week_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/twelve_week_text"
+            app:layout_constraintBottom_toBottomOf="@+id/thirty_day_button"
+            app:layout_constraintEnd_toStartOf="@+id/six_month_button"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/thirty_day_button"
+            app:layout_constraintTop_toTopOf="@+id/thirty_day_button" />
+
+        <Button
+            android:id="@+id/six_month_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/six_month_text"
+            app:layout_constraintBottom_toBottomOf="@+id/twelve_week_button"
+            app:layout_constraintEnd_toStartOf="@+id/one_year_button"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/twelve_week_button"
+            app:layout_constraintTop_toTopOf="@+id/twelve_week_button" />
+
+        <Button
+            android:id="@+id/one_year_button"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@string/one_year_text"
+            app:layout_constraintBottom_toBottomOf="@+id/six_month_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/six_month_button"
+            app:layout_constraintTop_toTopOf="@+id/six_month_button" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/statisticList"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/seven_day_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
