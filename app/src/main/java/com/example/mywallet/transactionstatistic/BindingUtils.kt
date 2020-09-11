@@ -13,7 +13,7 @@ fun TextView.setCurrencyFormat(item : Revenue)
         val formatter: NumberFormat = DecimalFormat("#,###")
         val total = Math.abs(item.total)
         val moneyInString = formatter.format(total)
-        text = (if(item.total > 0) "+" else "-") + moneyInString + " đ"
+        text = "\u03A3" + (if(item.total >= 0) "+" else "-") + moneyInString + " đ"
 
     }
 }

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -120,6 +121,9 @@ class TransactionStatisticFragment : Fragment() {
 
             })
         }
+
+        (activity as AppCompatActivity).supportActionBar?.title = "Các Giao Dịch"
+
         return binding.root
     }
 
