@@ -4,6 +4,7 @@ package com.example.mywallet.transactionstatistic
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
 
 
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +15,6 @@ import com.example.mywallet.financetracker.TransactionListView
 import kotlinx.coroutines.*
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.WeekFields
 import java.util.*
 
 
@@ -31,96 +31,107 @@ class TransactionStatisticViewModel( dataSource: WalletDatabaseDao
 
     private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
-
     val revenueList = MutableLiveData<MutableList<Revenue>>()
 
+    lateinit var transactions: LiveData<List<TransactionListView>>
 
     @RequiresApi(Build.VERSION_CODES.O)
-    val milestone = OffsetDateTime.now().minusDays(30)
-    @RequiresApi(Build.VERSION_CODES.O)
-    val transactions = database.getAllTransactionsByTime(milestone.format(formatter))
-
-
-
-
-//    fun onGetList(time: String) : List<TransactionListView> {
-//        var list : List<TransactionListView>? = null
-//        uiScope.launch {
-//            list = getTransactionList(time)
-//        }
-//            Log.i("inside suspend fun", list.toString() )
-//        return list!!
-//
-//    }
-
-//    suspend fun getTransactionList(time : String) : List<TransactionListView>{
-//        return withContext(Dispatchers.IO) {
-//            val list = database.getAllTransactionsByTime(time)
-//            Log.i("inside suspend fun", list?.get(0)?.AccountName)
-//            list
-//
-//        }
-//    }
+    fun onSevenDayClick() {
+    val milestone = OffsetDateTime.now().minusDays(7)
+    transactions = database.getAllTransactionsByTime(milestone.format(formatter))
+    }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun onSevenDaysStatistic(transactionList :List<TransactionListView>){
-        //val milestone = OffsetDateTime.now().minusDays(7)
-        //val transactionList = onGetList(milestone.format(formatter))
-       // val transactionList = onGetList(milestone.format(formatter))
+    fun onThirtyDayClick(){
+        val milestone = OffsetDateTime.now().minusDays(30)
+        transactions = database.getAllTransactionsByTime(milestone.format(formatter))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onTwelveWeekClick(){
+        val milestone = OffsetDateTime.now().minusWeeks(12)
+        transactions = database.getAllTransactionsByTime(milestone.format(formatter))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onSixMonthClick(){
+        val milestone = OffsetDateTime.now().minusMonths(6)
+        transactions = database.getAllTransactionsByTime(milestone.format(formatter))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onOneYearClick(){
+        val milestone = OffsetDateTime.now().minusYears(1)
+        transactions = database.getAllTransactionsByTime(milestone.format(formatter))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onSevenDaysStatistic(transactionList: List<TransactionListView>){
+
         Log.i("inside on Seven Days", transactionList.toString() )
-        revenueList.value = mutableListOf()
-        Log.i("statistic", "outside let")
-        transactionList?.let {
-            Log.i("statistic", "inside let")
-            var total = 0L
+        val operation : (TransactionListView) -> String = {
             val fmt : DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM")
-            Log.i("transaction item", transactionList.get(0).toString())
-            val revenue = Revenue(timeMark = fmt.format(transactionList?.get(0)?.DateCreated))
-            Log.i("revenue item", revenue.toString())
-            revenue.revenueID = transactionList?.get(0)?.TransID
-            for (item in transactionList!!){
-                val tempTime = fmt.format(item.DateCreated)
-                if (tempTime != revenue.timeMark){
-                    val newRevenue = revenue.copy()
-                    revenueList.value!!.add(newRevenue)
-                    revenue.timeMark = tempTime
-                    revenue.total = 0L
-                    revenue.revenueID = item.TransID
-                    revenue.quantity = 0
-                }
-                if (item.isIncome) revenue.total += item.TransMoney
-                else revenue.total -= item.TransMoney
-                revenue.quantity++
-                revenue.revenueID = item.TransID
-
-            }
-            revenueList.value!!.add(revenue)
-
+            fmt.format(it.DateCreated)
         }
-        Log.i("revenue list", revenueList.value.toString())
+        createRevenueList(transactionList, operation)
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun onThirtyDayStatistic(transactionList :List<TransactionListView>){
-        Log.i("inside on Seven Days", transactionList.toString() )
+        val operation : (TransactionListView) -> String = {
+            val calendar = Calendar.getInstance(Locale.getDefault())
+            calendar.set(it.DateCreated.year, it.DateCreated.monthValue - 1, it.DateCreated.dayOfMonth)
+            "Tuần " + calendar.get(Calendar.WEEK_OF_YEAR)
+        }
+        createRevenueList(transactionList, operation)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onTwelveWeekStatistic(transactionList :List<TransactionListView>){
+        val operation : (TransactionListView) -> String = {
+            val calendar = Calendar.getInstance(Locale.getDefault())
+            calendar.set(it.DateCreated.year, it.DateCreated.monthValue - 1, it.DateCreated.dayOfMonth)
+            "Tuần " + calendar.get(Calendar.WEEK_OF_YEAR)
+        }
+        createRevenueList(transactionList, operation)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onSixMonthStatistic(transactionList: List<TransactionListView>){
+
+        val operation : (TransactionListView) -> String = {
+            val fmt : DateTimeFormatter = DateTimeFormatter.ofPattern("MM")
+            "Tháng " + fmt.format(it.DateCreated)
+        }
+        createRevenueList(transactionList, operation)
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun onOneYearStatistic(transactionList: List<TransactionListView>){
+
+        val operation : (TransactionListView) -> String = {
+            val fmt : DateTimeFormatter = DateTimeFormatter.ofPattern("MM")
+            "Tháng " + fmt.format(it.DateCreated)
+        }
+        createRevenueList(transactionList, operation)
+
+    }
+
+    fun createRevenueList(transactionList: List<TransactionListView>, operation: (TransactionListView) -> String){
         revenueList.value = mutableListOf()
         Log.i("statistic", "outside let")
         transactionList?.let {
             Log.i("statistic", "inside let")
-            var total = 0L
-//            val fmt : DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM")
-//            Log.i("transaction item", transactionList.get(0).toString())
-//            val revenue = Revenue(timeMark = fmt.format(transactionList?.get(0)?.DateCreated))
-            val calendar = Calendar.getInstance(Locale.getDefault())
-            val date = transactionList?.get(0)?.DateCreated
-            calendar.set(date.year, date.monthValue - 1, date.dayOfMonth)
-            //calendar.time = Date(date.year, date.monthValue, date.dayOfMonth)
-            val revenue = Revenue(timeMark = "Tuần " + calendar.get(Calendar.WEEK_OF_YEAR))
+
+            val revenue = Revenue(timeMark = operation(transactionList[0]))
             Log.i("revenue item", revenue.toString())
             revenue.revenueID = transactionList?.get(0)?.TransID
             for (item in transactionList!!){
-                calendar.set(item.DateCreated.year, item.DateCreated.monthValue - 1, item.DateCreated.dayOfMonth)
-                val tempTime = "Tuần " + calendar.get(Calendar.WEEK_OF_YEAR)
+                val tempTime = operation(item)
                 if (tempTime != revenue.timeMark){
                     val newRevenue = revenue.copy()
                     revenueList.value!!.add(newRevenue)

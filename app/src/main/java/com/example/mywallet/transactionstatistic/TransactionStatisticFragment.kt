@@ -54,8 +54,19 @@ class TransactionStatisticFragment : Fragment() {
         )
         binding.statisticList.adapter = transAdapter
 
+        transactionStatisticViewModel.onSevenDayClick()
+        transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
+
+            transaction?.let {
+                transactionStatisticViewModel.onSevenDaysStatistic(it)
+                transAdapter.addHeaderAndSubmitList(revenueList = transactionStatisticViewModel.revenueList.value!!, transList = transaction)
+            }
+
+        })
+
 
         binding.sevenDayButton.setOnClickListener {
+            transactionStatisticViewModel.onSevenDayClick()
             transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
 
                     transaction?.let {
@@ -66,10 +77,44 @@ class TransactionStatisticFragment : Fragment() {
             })
         }
         binding.thirtyDayButton.setOnClickListener {
+            transactionStatisticViewModel.onThirtyDayClick()
             transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
 
                 transaction?.let {
                     transactionStatisticViewModel.onThirtyDayStatistic(it)
+                    transAdapter.addHeaderAndSubmitList(revenueList = transactionStatisticViewModel.revenueList.value!!, transList = transaction)
+                }
+
+            })
+        }
+        binding.twelveWeekButton.setOnClickListener {
+            transactionStatisticViewModel.onTwelveWeekClick()
+            transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
+
+                transaction?.let {
+                    transactionStatisticViewModel.onTwelveWeekStatistic(it)
+                    transAdapter.addHeaderAndSubmitList(revenueList = transactionStatisticViewModel.revenueList.value!!, transList = transaction)
+                }
+
+            })
+        }
+        binding.sixMonthButton.setOnClickListener {
+            transactionStatisticViewModel.onSixMonthClick()
+            transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
+
+                transaction?.let {
+                    transactionStatisticViewModel.onSixMonthStatistic(it)
+                    transAdapter.addHeaderAndSubmitList(revenueList = transactionStatisticViewModel.revenueList.value!!, transList = transaction)
+                }
+
+            })
+        }
+        binding.oneYearButton.setOnClickListener {
+            transactionStatisticViewModel.onOneYearClick()
+            transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
+
+                transaction?.let {
+                    transactionStatisticViewModel.onOneYearStatistic(it)
                     transAdapter.addHeaderAndSubmitList(revenueList = transactionStatisticViewModel.revenueList.value!!, transList = transaction)
                 }
 
