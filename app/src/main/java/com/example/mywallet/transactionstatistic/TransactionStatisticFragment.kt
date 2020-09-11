@@ -1,6 +1,7 @@
 package com.example.mywallet.transactionstatistic
 
 import TransactionStatisticAdapter
+import android.graphics.Color
 import android.os.Build
 
 import android.os.Bundle
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -26,14 +28,14 @@ import com.example.mywallet.financetracker.TransactionListener
 
 class TransactionStatisticFragment : Fragment() {
 
-
+    private lateinit var binding : FragmentTransactionStatisticBinding
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil.inflate<FragmentTransactionStatisticBinding>(
+        binding = DataBindingUtil.inflate<FragmentTransactionStatisticBinding>(
             inflater,
             R.layout.fragment_transaction_statistic, container, false
         )
@@ -64,9 +66,12 @@ class TransactionStatisticFragment : Fragment() {
             }
 
         })
+        binding.sevenDayButton.setBackgroundResource(R.drawable.rounded_button)
+        binding.sevenDayButton.setTextColor(Color.WHITE)
 
 
         binding.sevenDayButton.setOnClickListener {
+            onChangeButtonBackground(it)
             transactionStatisticViewModel.onSevenDayClick()
             transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
 
@@ -78,6 +83,7 @@ class TransactionStatisticFragment : Fragment() {
             })
         }
         binding.thirtyDayButton.setOnClickListener {
+            onChangeButtonBackground(it)
             transactionStatisticViewModel.onThirtyDayClick()
             transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
 
@@ -89,6 +95,7 @@ class TransactionStatisticFragment : Fragment() {
             })
         }
         binding.twelveWeekButton.setOnClickListener {
+            onChangeButtonBackground(it)
             transactionStatisticViewModel.onTwelveWeekClick()
             transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
 
@@ -100,6 +107,7 @@ class TransactionStatisticFragment : Fragment() {
             })
         }
         binding.sixMonthButton.setOnClickListener {
+            onChangeButtonBackground(it)
             transactionStatisticViewModel.onSixMonthClick()
             transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
 
@@ -111,6 +119,7 @@ class TransactionStatisticFragment : Fragment() {
             })
         }
         binding.oneYearButton.setOnClickListener {
+            onChangeButtonBackground(it)
             transactionStatisticViewModel.onOneYearClick()
             transactionStatisticViewModel.transactions.observe(viewLifecycleOwner, Observer { transaction ->
 
@@ -127,5 +136,18 @@ class TransactionStatisticFragment : Fragment() {
         return binding.root
     }
 
+
+    fun onChangeButtonBackground(v : View){
+        val buttonList = listOf(binding.sevenDayButton, binding.thirtyDayButton
+                            , binding.twelveWeekButton, binding.sixMonthButton
+                            , binding.oneYearButton)
+        buttonList.forEach {
+            it.setBackgroundResource(R.drawable.rounded_bordered_button)
+            it.setTextColor(Color.rgb(52,152,219))
+        }
+        (v as Button).setBackgroundResource(R.drawable.rounded_button)
+        v.setTextColor(Color.WHITE)
+
+    }
 
 }
